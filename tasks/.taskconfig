@@ -1,0 +1,143 @@
+// (c) roy
+
+
+const path = require('path');
+const $env = require('gulp-util').env;
+
+/**
+ * Specifies whether a task should be executed in the debug environment. Tasks
+ * may perform differently when running in debug (i.e. skipping compression
+ * processes).
+ *
+ * @type {boolean} --debug, --d, NODE_ENV = 'development' in env
+ */
+const debug = $env['debug'] || $env['d'] || process.env.NODE_ENV === 'development';
+
+/**
+ * Supported options specified through CLI params when executing Gulp tasks.
+ *
+ * @type {boolean} --serve, --s - Specifies whether the app will be served.
+ * @type {boolean} --watch, --w - Specifies whether files should be watched.
+ */
+const env = {
+  serve: $env['serve'] || $env['s'],
+  watch: $env['watch'] || $env['w']
+};
+
+/**
+ * Common extensions per file type for glob patterns.
+ */
+const patterns = {
+  db: 'sqlite3',
+  core: 'py',
+  images: '{jpg,jpeg,gif,png,svg}',
+  videos: '{ogv,mp4}',
+  scripts: 'js',
+  styles: '{css,styl,less,scss,sass}',
+  templates: '{html,htm,php,txt}',
+  data: '{json,yml,csv}',
+  fonts: '{eot,svg,ttf,woff,woff2}'
+};
+
+/**
+ * Common paths used throughout the Gulp pipeline.
+ */
+const paths = {
+  src: path.join(__dirname, '../', 'app'),
+  tmp: path.join(__dirname, '../', '.tmp'),
+  build: path.join(__dirname, '../', 'build')
+};
+
+module.exports = {
+  debug: debug,
+  env: env,
+  patterns: patterns,
+  paths: paths,
+  clean: {
+    entry: [paths.tmp, paths.build]
+  },
+  images: {
+    entry: path.join(paths.src, 'static', 'images', '**', '*.' + patterns.images),
+    output: path.join(paths.tmp, 'static', 'images')
+  },
+  videos: {
+    entry: path.join(paths.src, 'static', 'videos', '**', '*.' + patterns.videos),
+    output: path.join(paths.tmp, 'static', 'images')
+  },
+  fonts: {
+    entry: [
+      path.join(paths.src, 'static', 'fonts', '**', '*.' + patterns.fonts)
+    ],
+    output: path.join(paths.tmp, 'static', 'fonts')
+  },
+  extras: {
+    entry: path.join(paths.src, 'static', '*'),
+    output: path.join(paths.tmp, 'static')
+  },
+  db: {
+    entry: path.join(paths.src, '**', '*.' + patterns.db),
+    output: (debug) ? path.join(paths.tmp) : path.join(paths.build)
+  },
+  core: {
+    entry: path.join(paths.src, '**', '*.' + patterns.core),
+    output: (debug) ? path.join(paths.tmp) : path.join(paths.build)
+  },
+  styles: {
+    entry: path.join(paths.src, 'static', '**', 'stylesheets', '*.' + patterns.styles),
+    sass: {
+      outputStyle: 'nested',
+      includePaths: [
+        path.join(__dirname, '../', 'node_modules'),
+        path.join(paths.src, 'static', 'stylesheets')
+      ],
+    },
+    autoprefixer: {
+      browsers: ['last 2 version', 'ie 9']
+    },
+    output: path.join(paths.tmp, 'static')
+  },
+  scripts: {
+    entry: path.join(paths.src, 'static', '**', 'javascripts', '*.' + patterns.scripts),
+    output: path.join(paths.tmp, 'static')
+  },
+  templates: {
+    entry: path.join(paths.src, 'templates', '**', '*.' + patterns.templates),
+    output: (debug) ? path.join(paths.tmp, 'templates') : path.join(paths.build, 'templates'),
+    htmlmin: {
+      collapseWhitespace: true
+    }
+  },
+  build: {
+    entry: path.join(paths.build, '**', '*'),
+    output: paths.build
+  },
+  serve: {
+    browserSync: {
+      notify: false,
+      open: false,
+      proxy: '0.0.0.0:3000',
+      port: 9000
+    }
+  },
+  watch: {
+    entries: [{
+      files: path.join(paths.src, '**', '*.' + patterns.core),
+      tasks: ['core']
+    }, {
+      files: path.join(paths.src, 'static', '**', '*.' + patterns.images),
+      tasks: ['images']
+    }, {
+      files: path.join(paths.src, 'static', '**', '*.' + patterns.videos),
+      tasks: ['videos']
+    }, {
+      files: path.join(paths.src, 'static', '**', '*.' + patterns.styles),
+      tasks: ['styles']
+    }, {
+      files: path.join(paths.src, 'static', '**', '*.' + patterns.fonts),
+      tasks: ['fonts']
+    }, {
+      files: path.join(paths.src, 'templates', '**', '*.' + patterns.templates),
+      tasks: ['templates']
+    }]
+  }
+};

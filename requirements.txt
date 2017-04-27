@@ -1,0 +1,4 @@
+Django==1.9.6
+ecdsa==0.13
+paramiko==2.0.0
+pycrypto==2.6.1

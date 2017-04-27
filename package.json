@@ -1,0 +1,41 @@
+{
+  "name": "helloworld",
+  "version": "0.0.0",
+  "private": true,
+  "repository": {},
+  "engines": {
+    "node": ">=5.6.0"
+  },
+  "scripts": {
+    "clean": "gulp clean",
+    "migrate": "python app/manage.py migrate",
+    "build:dev": "gulp --debug",
+    "build": "gulp",
+    "dev": "npm run build:dev -- --watch --serve",
+    "prod": "npm run build -- --serve"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.3.6",
+    "babelify": "^7.3.0",
+    "browser-sync": "^2.13.0",
+    "browserify": "^13.0.1",
+    "del": "^2.2.0",
+    "cssnano": "^3.7.0",
+    "gulp": "^3.9.1",
+    "gulp-htmlmin": "^2.0.0",
+    "gulp-if": "^2.0.1",
+    "gulp-postcss": "^6.1.1",
+    "gulp-sass": "^2.3.1",
+    "gulp-size": "^2.1.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.1.0",
+    "gulp-util": "^3.0.4",
+    "run-sequence": "^1.0.2",
+    "through2": "^2.0.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.2.2"
+  }
+}

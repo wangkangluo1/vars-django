@@ -1,0 +1,13 @@
+node_modules
+/include
+/bin
+/lib
+/build
+/.tmp
+pip-selfcheck.json
+!.keep
+.secrets
+.DS_STORE
+.Python
+*.pyc
+npm-debug.log
